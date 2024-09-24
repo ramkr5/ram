@@ -6,7 +6,7 @@ function addUser() {
     if (userInput) {
         username = userInput;
         document.getElementById('username').value = ''; // Clear the input
-        alert(`Welcome, ${username}!`);
+        alert(Welcome, ${username}!);
     }
 }
 
@@ -35,22 +35,13 @@ function renderPosts() {
     posts.forEach(post => {
         const postElement = document.createElement('div');
         postElement.className = 'post';
-        postElement.innerHTML = `
+        postElement.innerHTML = 
             <p>${post.content} <span class="likes">Likes: ${post.likes}</span> | <span class="dislikes">Dislikes: ${post.dislikes}</span> | Comments: <span class="commentCount">${post.comments.length}</span></p>
             <button onclick="likePost(${post.id})">👍 Like</button>
             <button onclick="dislikePost(${post.id})">👎 Dislike</button>
             <button onclick="addComment(${post.id})">💬 Comment</button>
             <div class="comments"></div>
-        `;
-
-        // Render comments with timestamps
-        const commentsContainer = postElement.querySelector('.comments');
-        post.comments.forEach(comment => {
-            const commentElement = document.createElement('div');
-            commentElement.innerHTML = `<strong>${comment.text}</strong> <em>${comment.date}</em>`;
-            commentsContainer.appendChild(commentElement);
-        });
-
+        ;
         postsContainer.appendChild(postElement);
     });
 }
@@ -76,8 +67,7 @@ function addComment(postId) {
     if (post) {
         const commentInput = prompt('Enter your comment:');
         if (commentInput) {
-            const timestamp = new Date().toLocaleString(); // Get current date and time
-            post.comments.push({ text: commentInput, date: timestamp });
+            post.comments.push(commentInput);
             renderPosts(); // Re-render posts to update comments
         }
     }
