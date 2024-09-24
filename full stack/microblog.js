@@ -16,6 +16,8 @@ function createPost() {
         const post = {
             content: postContent,
             likes: 0,
+            dislikes: 0,
+            comments: [],
             id: Date.now()
         };
         posts.push(post);
@@ -34,8 +36,11 @@ function renderPosts() {
         const postElement = document.createElement('div');
         postElement.className = 'post';
         postElement.innerHTML = `
-            <p>${post.content} <span class="likes">Likes: ${post.likes}</span></p>
-            <button onclick="likePost(${post.id})">Like</button>
+            <p>${post.content} <span class="likes">Likes: ${post.likes}</span> | <span class="dislikes">Dislikes: ${post.dislikes}</span> | Comments: <span class="commentCount">${post.comments.length}</span></p>
+            <button onclick="likePost(${post.id})">👍 Like</button>
+            <button onclick="dislikePost(${post.id})">👎 Dislike</button>
+            <button onclick="addComment(${post.id})">💬 Comment</button>
+            <div class="comments"></div>
         `;
         postsContainer.appendChild(postElement);
     });
@@ -46,5 +51,24 @@ function likePost(postId) {
     if (post) {
         post.likes += 1;
         renderPosts(); // Re-render posts to update likes
+    }
+}
+
+function dislikePost(postId) {
+    const post = posts.find(p => p.id === postId);
+    if (post) {
+        post.dislikes += 1;
+        renderPosts(); // Re-render posts to update dislikes
+    }
+}
+
+function addComment(postId) {
+    const post = posts.find(p => p.id === postId);
+    if (post) {
+        const commentInput = prompt('Enter your comment:');
+        if (commentInput) {
+            post.comments.push(commentInput);
+            renderPosts(); // Re-render posts to update comments
+        }
     }
 }
