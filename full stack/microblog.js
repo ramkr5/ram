@@ -42,6 +42,15 @@ function renderPosts() {
             <button onclick="addComment(${post.id})">💬 Comment</button>
             <div class="comments"></div>
         `;
+
+        // Render comments with timestamps
+        const commentsContainer = postElement.querySelector('.comments');
+        post.comments.forEach(comment => {
+            const commentElement = document.createElement('div');
+            commentElement.innerHTML = `<strong>${comment.text}</strong> <em>${comment.date}</em>`;
+            commentsContainer.appendChild(commentElement);
+        });
+
         postsContainer.appendChild(postElement);
     });
 }
@@ -67,8 +76,10 @@ function addComment(postId) {
     if (post) {
         const commentInput = prompt('Enter your comment:');
         if (commentInput) {
-            post.comments.push(commentInput);
+            const timestamp = new Date().toLocaleString(); // Get current date and time
+            post.comments.push({ text: commentInput, date: timestamp });
             renderPosts(); // Re-render posts to update comments
         }
     }
 }
+
