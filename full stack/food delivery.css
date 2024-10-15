@@ -1,34 +1,39 @@
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f8f8f8;
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
     margin: 0;
     padding: 20px;
 }
 
 header {
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 40px;
 }
 
 h1 {
-    color: #333;
+    color: #2c3e50;
+    font-size: 36px;
 }
 
 .menu {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-around;
+    justify-content: space-between;
 }
 
 .item {
     background-color: white;
-    border: 1px solid #ddd;
-    border-radius: 8px;
+    border-radius: 10px;
     padding: 20px;
-    margin: 10px;
-    width: 250px;
-    text-align: center;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin: 15px;
+    width: calc(33.33% - 30px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
 }
 
 .item img {
@@ -37,37 +42,51 @@ h1 {
     border-radius: 8px;
 }
 
+h2 {
+    color: #2980b9;
+    font-size: 24px;
+    margin: 10px 0;
+}
+
+p {
+    color: #7f8c8d;
+    font-size: 16px;
+    margin-bottom: 15px;
+}
+
 .price {
-    display: block;
     font-size: 20px;
-    color: #d9534f;
+    color: #e74c3c;
+    font-weight: bold;
     margin: 10px 0;
 }
 
 .add-to-cart {
-    background-color: #5cb85c;
+    background-color: #27ae60;
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 5px;
     padding: 10px 15px;
     cursor: pointer;
     font-size: 16px;
+    transition: background-color 0.3s;
 }
 
 .add-to-cart:hover {
-    background-color: #4cae4c;
+    background-color: #219150;
 }
 
 .cart {
-    margin-top: 40px;
+    margin-top: 50px;
     padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
+    border-radius: 10px;
     background-color: white;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .cart h2 {
-    margin: 0 0 20px;
+    margin-bottom: 20px;
+    color: #2c3e50;
 }
 
 .cart ul {
@@ -76,5 +95,5 @@ h1 {
 }
 
 .cart li {
-    padding: 5px 0;
-}
+  
+
