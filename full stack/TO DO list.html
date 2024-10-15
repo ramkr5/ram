@@ -5,33 +5,70 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>To Do List</title>
     <style>
-        .container {
-            width: 360px;
-        }  
-        #inputField {
-            width: 300px;
-            height: 46px;
-            border-width: 0;
-            border: 1px solid rgb(235, 13, 13);
-            outline: none;
-            font-size: 25px;
-            vertical-align: middle;
-        }
-        #addToDo {
-            height: 50px;
-            width: 50px;
-            border: 1px solid rgb(222, 14, 14);
-            vertical-align: middle;
-            font-size: 30px;
-        }
-        .paragraph-styling {
-            margin: 0;
-            cursor: pointer;
-            font-size: 20px;
-        }
-        .to-dos {
-            margin-top: 25px;
-        }
+        body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+.container {
+    width: 360px;
+    margin: 0 auto;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+#inputField {
+    width: calc(100% - 60px);
+    height: 46px;
+    border: 1px solid #e74c3c;
+    border-radius: 4px;
+    padding: 10px;
+    font-size: 18px;
+    outline: none;
+}
+
+#addToDo {
+    height: 46px;
+    width: 50px;
+    border: none;
+    background-color: #e74c3c;
+    color: white;
+    font-size: 24px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+#addToDo:hover {
+    background-color: #c0392b;
+}
+
+.to-dos {
+    margin-top: 25px;
+}
+
+.paragraph-styling {
+    margin: 10px 0;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.paragraph-styling:hover {
+    background-color: #f1f1f1;
+}
     </style>
 </head>
 <body>
