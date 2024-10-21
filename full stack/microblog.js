@@ -1,75 +1,88 @@
-let username = '';
-let posts = [];
+// Check if user is already logged in
+if (localStorage.getItem('loggedInUser')) {
+    showMicroblog();
+} else if (localStorage.getItem('users')) {
+    // If users exist, show login
+    document.getElementById('login').classList.remove('hidden');
+} else {
+    // Show signup if no users exist
+    document.getElementById('signup').classList.remove('hidden');
+}
 
-function addUser() {
-    const userInput = document.getElementById('username').value;
-    if (userInput) {
-        username = userInput;
-        document.getElementById('username').value = ''; // Clear the input
-        alert(Welcome, ${username}!);
+// Sign Up Function
+function signUp() {
+    const username = document.getElementById('signupUsername').value;
+    const password = document.getElementById('signupPassword').value;
+
+    if (username && password) {
+        let users = JSON.parse(localStorage.getItem('users')) || [];
+        const userExists = users.some(user => user.username === username);
+
+        if (userExists) {
+            alert("Username already exists. Try a different one.");
+        } else {
+            users.push({ username, password });
+            localStorage.setItem('users', JSON.stringify(users));
+            alert("Sign up successful! Please login.");
+            document.getElementById('signup').classList.add('hidden');
+            document.getElementById('login').classList.remove('hidden');
+        }
+    } else {
+        alert("Please fill in both fields.");
     }
 }
 
+// Login Function
+function login() {
+    const username = document.getElementById('loginUsername').value;
+    const password = document.getElementById('loginPassword').value;
+    const users = JSON.parse(localStorage.getItem('users')) || [];
+
+    const user = users.find(user => user.username === username && user.password === password);
+
+    if (user) {
+        localStorage.setItem('loggedInUser', username);
+        alert("Login successful!");
+        showMicroblog();
+    } else {
+        alert("Invalid username or password.");
+    }
+}
+
+// Show the microblogging section
+function showMicroblog() {
+    document.getElementById('signup').classList.add('hidden');
+    document.getElementById('login').classList.add('hidden');
+    document.getElementById('microblog').classList.remove('hidden');
+    loadPosts();
+}
+
+// Create a new post
 function createPost() {
     const postContent = document.getElementById('postContent').value;
-    if (postContent && username) {
-        const post = {
-            content: postContent,
-            likes: 0,
-            dislikes: 0,
-            comments: [],
-            id: Date.now()
-        };
-        posts.push(post);
-        document.getElementById('postContent').value = ''; // Clear the input
-        renderPosts();
-    } else {
-        alert('Please enter a post and ensure you have added a username.');
+    if (!postContent.trim()) {
+        alert("Post content cannot be empty!");
+        return;
     }
+
+    const posts = JSON.parse(localStorage.getItem('posts')) || [];
+    const username = localStorage.getItem('loggedInUser');
+    posts.push({ username, content: postContent });
+    localStorage.setItem('posts', JSON.stringify(posts));
+
+    document.getElementById('postContent').value = ''; // Clear input field
+    loadPosts(); // Re-render posts
 }
 
-function renderPosts() {
-    const postsContainer = document.getElementById('posts');
-    postsContainer.innerHTML = ''; // Clear previous posts
+// Load and display all posts
+function loadPosts() {
+    const postsDiv = document.getElementById('posts');
+    postsDiv.innerHTML = ''; // Clear the current posts
+    const posts = JSON.parse(localStorage.getItem('posts')) || [];
 
     posts.forEach(post => {
         const postElement = document.createElement('div');
-        postElement.className = 'post';
-        postElement.innerHTML = 
-            <p>${post.content} <span class="likes">Likes: ${post.likes}</span> | <span class="dislikes">Dislikes: ${post.dislikes}</span> | Comments: <span class="commentCount">${post.comments.length}</span></p>
-            <button onclick="likePost(${post.id})">👍 Like</button>
-            <button onclick="dislikePost(${post.id})">👎 Dislike</button>
-            <button onclick="addComment(${post.id})">💬 Comment</button>
-            <div class="comments"></div>
-        ;
-        postsContainer.appendChild(postElement);
+        postElement.innerHTML = `<strong>${post.username}:</strong> ${post.content}`;
+        postsDiv.appendChild(postElement);
     });
 }
-
-function likePost(postId) {
-    const post = posts.find(p => p.id === postId);
-    if (post) {
-        post.likes += 1;
-        renderPosts(); // Re-render posts to update likes
-    }
-}
-
-function dislikePost(postId) {
-    const post = posts.find(p => p.id === postId);
-    if (post) {
-        post.dislikes += 1;
-        renderPosts(); // Re-render posts to update dislikes
-    }
-}
-
-function addComment(postId) {
-    const post = posts.find(p => p.id === postId);
-    if (post) {
-        const commentInput = prompt('Enter your comment:');
-        if (commentInput) {
-            post.comments.push(commentInput);
-            renderPosts(); // Re-render posts to update comments
-        }
-    }
-}
-
