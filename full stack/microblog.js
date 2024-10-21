@@ -1,4 +1,4 @@
-// Check if user is already logged in
+// Check if a user is already logged in
 if (localStorage.getItem('loggedInUser')) {
     showMicroblog();
 } else if (localStorage.getItem('users')) {
@@ -82,6 +82,10 @@ function loadPosts() {
 
     posts.forEach(post => {
         const postElement = document.createElement('div');
+        postElement.style.border = "1px solid #ddd";
+        postElement.style.margin = "10px 0";
+        postElement.style.padding = "10px";
+        postElement.style.borderRadius = "5px";
         postElement.innerHTML = `<strong>${post.username}:</strong> ${post.content}`;
         postsDiv.appendChild(postElement);
     });
