@@ -5,7 +5,7 @@ body {
 }
 
 #app {
-    max-width: 500px;
+    max-width: 600px;
     margin: 0 auto;
     background-color: #fff;
     padding: 20px;
@@ -53,4 +53,12 @@ button:hover {
 button {
     width: auto;
     margin-right: 5px;
+}
+
+.post-buttons {
+    margin-top: 10px;
+}
+
+.comment-section {
+    margin-top: 10px;
 }
