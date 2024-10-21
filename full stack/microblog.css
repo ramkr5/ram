@@ -49,3 +49,8 @@ button:hover {
     padding: 10px;
     border-radius: 5px;
 }
+
+button {
+    width: auto;
+    margin-right: 5px;
+}
