@@ -1,101 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>To Do List</title>
-    <style>
-        body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f0f0f0;
-    margin: 0;
-    padding: 20px;
-}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>To-Do List</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f7f7f7;
+      padding: 20px;
+    }
 
-h1 {
-    text-align: center;
-    color: #333;
-}
+    .container {
+      max-width: 400px;
+      margin: 0 auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
 
-.container {
-    width: 360px;
-    margin: 0 auto;
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
+    h2 {
+      text-align: center;
+      color: #333;
+    }
 
-#inputField {
-    width: calc(100% - 60px);
-    height: 46px;
-    border: 1px solid #e74c3c;
-    border-radius: 4px;
-    padding: 10px;
-    font-size: 18px;
-    outline: none;
-}
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin-bottom: 10px;
+    }
 
-#addToDo {
-    height: 46px;
-    width: 50px;
-    border: none;
-    background-color: #e74c3c;
-    color: white;
-    font-size: 24px;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-left: 10px;
-}
+    ul {
+      list-style: none;
+      padding: 0;
+    }
 
-#addToDo:hover {
-    background-color: #c0392b;
-}
+    li {
+      background-color: #f1f1f1;
+      margin-bottom: 10px;
+      padding: 10px;
+      border-radius: 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-.to-dos {
-    margin-top: 25px;
-}
+    .remove-btn {
+      background-color: #ff4d4d;
+      border: none;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
 
-.paragraph-styling {
-    margin: 10px 0;
-    padding: 10px;
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
+    .remove-btn:hover {
+      background-color: #ff1a1a;
+    }
 
-.paragraph-styling:hover {
-    background-color: #f1f1f1;
-}
-    </style>
+  </style>
 </head>
 <body>
-    <h1>To Do List</h1>
-    <div class="container">
-        <input id="inputField" type="text"><button id="addToDo">+</button>
-        <div class="to-dos" id="toDoContainer">
-        </div>
-    </div>
-    <script>
-        let addToDoButton = document.getElementById('addToDo');
-        let toDoContainer = document.getElementById('toDoContainer');
-        let inputField = document.getElementById('inputField');
 
-        addToDoButton.addEventListener('click', function(){
-            var paragraph = document.createElement('p');
-            paragraph.classList.add('paragraph-styling');
-            paragraph.innerText = inputField.value; 
-            toDoContainer.appendChild(paragraph);
-            inputField.value = "";
-            paragraph.addEventListener('click', function(){
-                paragraph.style.textDecoration = "line-through";
-            })
-            paragraph.addEventListener('dblclick', function(){
-                toDoContainer.removeChild(paragraph);
-            })
-        })
-    </script>
+  <div class="container">
+    <h2>My To-Do List</h2>
+    <input type="text" id="taskInput" placeholder="Enter a new task...">
+    <ul id="taskList"></ul>
+  </div>
+
+  <script>
+    // Retrieve existing tasks from localStorage
+    const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+
+    const taskInput = document.getElementById('taskInput');
+    const taskList = document.getElementById('taskList');
+
+    // Function to render tasks on the page
+    function renderTasks() {
+      taskList.innerHTML = ''; // Clear the task list
+      tasks.forEach((task, index) => {
+        const li = document.createElement('li');
+        li.innerHTML = `${task} <button class="remove-btn" onclick="removeTask(${index})">Remove</button>`;
+        taskList.appendChild(li);
+      });
+    }
+
+    // Add a new task when pressing Enter key
+    taskInput.addEventListener('keydown', function(event) {
+      if (event.key === 'Enter' && taskInput.value.trim()) {
+        tasks.push(taskInput.value.trim());  // Add new task to array
+        localStorage.setItem('tasks', JSON.stringify(tasks)); // Save tasks to localStorage
+        taskInput.value = ''; // Clear input field
+        renderTasks(); // Re-render the task list
+      }
+    });
+
+    // Remove a task
+    function removeTask(index) {
+      tasks.splice(index, 1); // Remove task from array
+      localStorage.setItem('tasks', JSON.stringify(tasks)); // Update localStorage
+      renderTasks(); // Re-render the task list
+    }
+
+    // Initial render when page loads
+    renderTasks();
+  </script>
+
 </body>
 </html>
