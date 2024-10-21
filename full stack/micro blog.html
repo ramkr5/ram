@@ -11,7 +11,7 @@
         <h1>Microblogging App</h1>
 
         <!-- Sign Up Section -->
-        <div id="signup">
+        <div id="signup" class="hidden">
             <h2>Sign Up</h2>
             <input type="text" id="signupUsername" placeholder="Choose a username">
             <input type="password" id="signupPassword" placeholder="Choose a password">
@@ -31,6 +31,8 @@
             <h2>Create Post</h2>
             <input type="text" id="postContent" placeholder="What's on your mind?">
             <button onclick="createPost()">Post</button>
+
+            <button onclick="logout()">Logout</button>
 
             <div id="posts">
                 <!-- Posts will be displayed here -->
