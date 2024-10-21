@@ -1,4 +1,4 @@
-// Check if user is already logged in
+// Check if a user is logged in
 if (localStorage.getItem('loggedInUser')) {
     showMicroblog();
 } else if (localStorage.getItem('users')) {
@@ -23,7 +23,7 @@ function signUp() {
         } else {
             users.push({ username, password });
             localStorage.setItem('users', JSON.stringify(users));
-            alert("Sign up successful! Please login.");
+            alert("Sign up successful! Please log in.");
             document.getElementById('signup').classList.add('hidden');
             document.getElementById('login').classList.remove('hidden');
         }
@@ -158,7 +158,4 @@ function addComment(index) {
 // Delete a post
 function deletePost(index) {
     const posts = JSON.parse(localStorage.getItem('posts')) || [];
-    posts.splice(index, 1); // Remove the post from the array
-    localStorage.setItem('posts', JSON.stringify(posts));
-    loadPosts(); // Re-render posts
-}
+    posts.splice(index, 1); //
