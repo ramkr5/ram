@@ -9,18 +9,35 @@
 <body>
     <div id="app">
         <h1>Microblogging App</h1>
-        <div>
-            <input type="text" id="username" placeholder="Enter your username">
-            <button onclick="addUser()">Add User</button>
+
+        <!-- Sign Up Section -->
+        <div id="signup">
+            <h2>Sign Up</h2>
+            <input type="text" id="signupUsername" placeholder="Choose a username">
+            <input type="password" id="signupPassword" placeholder="Choose a password">
+            <button onclick="signUp()">Sign Up</button>
         </div>
-        <div>
+
+        <!-- Login Section -->
+        <div id="login" class="hidden">
+            <h2>Login</h2>
+            <input type="text" id="loginUsername" placeholder="Enter your username">
+            <input type="password" id="loginPassword" placeholder="Enter your password">
+            <button onclick="login()">Login</button>
+        </div>
+
+        <!-- Microblogging Section -->
+        <div id="microblog" class="hidden">
             <h2>Create Post</h2>
             <input type="text" id="postContent" placeholder="What's on your mind?">
             <button onclick="createPost()">Post</button>
+
+            <div id="posts">
+                <!-- Posts will be displayed here -->
+            </div>
         </div>
-        <div id="posts"></div>
     </div>
-    <script src="micro blog.js"></script>
+
+    <script src="microblog.js"></script>
 </body>
 </html>
-
