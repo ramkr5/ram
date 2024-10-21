@@ -1,161 +1,116 @@
-// Check if a user is logged in
-if (localStorage.getItem('loggedInUser')) {
-    showMicroblog();
-} else if (localStorage.getItem('users')) {
-    // If users exist, show login
-    document.getElementById('login').classList.remove('hidden');
-} else {
-    // Show signup if no users exist
-    document.getElementById('signup').classList.remove('hidden');
-}
+let users = [];
+let currentUser = null;
+let posts = [];
 
-// Sign Up Function
 function signUp() {
     const username = document.getElementById('signupUsername').value;
     const password = document.getElementById('signupPassword').value;
 
-    if (username && password) {
-        let users = JSON.parse(localStorage.getItem('users')) || [];
-        const userExists = users.some(user => user.username === username);
-
-        if (userExists) {
-            alert("Username already exists. Try a different one.");
-        } else {
-            users.push({ username, password });
-            localStorage.setItem('users', JSON.stringify(users));
-            alert("Sign up successful! Please log in.");
-            document.getElementById('signup').classList.add('hidden');
-            document.getElementById('login').classList.remove('hidden');
-        }
-    } else {
-        alert("Please fill in both fields.");
+    if (!username || !password) {
+        alert('Please fill in all fields.');
+        return;
     }
+
+    if (users.find(user => user.username === username)) {
+        alert('User already exists.');
+        return;
+    }
+
+    users.push({ username, password });
+    alert('Sign up successful! You can now log in.');
+    document.getElementById('signupUsername').value = '';
+    document.getElementById('signupPassword').value = '';
 }
 
-// Login Function
 function login() {
     const username = document.getElementById('loginUsername').value;
     const password = document.getElementById('loginPassword').value;
-    const users = JSON.parse(localStorage.getItem('users')) || [];
 
     const user = users.find(user => user.username === username && user.password === password);
 
     if (user) {
-        localStorage.setItem('loggedInUser', username);
-        alert("Login successful!");
-        showMicroblog();
+        currentUser = user;
+        alert(`Welcome ${username}!`);
+        document.getElementById('auth').style.display = 'none';
+        document.getElementById('postSection').style.display = 'block';
+        document.getElementById('loginUsername').value = '';
+        document.getElementById('loginPassword').value = '';
+        displayPosts();
     } else {
-        alert("Invalid username or password.");
+        alert('Invalid username or password.');
     }
 }
 
-// Show the microblogging section
-function showMicroblog() {
-    document.getElementById('signup').classList.add('hidden');
-    document.getElementById('login').classList.add('hidden');
-    document.getElementById('microblog').classList.remove('hidden');
-    loadPosts();
-}
-
-// Create a new post
 function createPost() {
-    const postContent = document.getElementById('postContent').value;
-    if (!postContent.trim()) {
-        alert("Post content cannot be empty!");
+    const content = document.getElementById('postContent').value;
+
+    if (!content) {
+        alert('Please enter some content.');
         return;
     }
 
-    const posts = JSON.parse(localStorage.getItem('posts')) || [];
-    const username = localStorage.getItem('loggedInUser');
-    const date = new Date();
     const post = {
-        username: username,
-        content: postContent,
-        timestamp: date.toLocaleString(),
+        content,
+        date: new Date().toLocaleString(),
         likes: 0,
         dislikes: 0,
         comments: [],
+        user: currentUser.username
     };
-    posts.push(post);
-    localStorage.setItem('posts', JSON.stringify(posts));
 
-    document.getElementById('postContent').value = ''; // Clear input field
-    loadPosts(); // Re-render posts
+    posts.push(post);
+    document.getElementById('postContent').value = '';
+    displayPosts();
 }
 
-// Load and display all posts
-function loadPosts() {
-    const postsDiv = document.getElementById('posts');
-    postsDiv.innerHTML = ''; // Clear the current posts
-    const posts = JSON.parse(localStorage.getItem('posts')) || [];
+function displayPosts() {
+    const postsContainer = document.getElementById('postsContainer');
+    postsContainer.innerHTML = '';
 
     posts.forEach((post, index) => {
-        const postElement = document.createElement('div');
-        postElement.style.border = "1px solid #ddd";
-        postElement.style.margin = "10px 0";
-        postElement.style.padding = "10px";
-        postElement.style.borderRadius = "5px";
-        
-        postElement.innerHTML = `
-            <strong>${post.username}:</strong> ${post.content}<br>
-            <small>Posted on: ${post.timestamp}</small><br><br>
-            <div class="post-buttons">
-                <button onclick="likePost(${index})">👍 ${post.likes}</button>
-                <button onclick="dislikePost(${index})">👎 ${post.dislikes}</button>
-                <button onclick="toggleComments(${index})">💬 Comments</button>
-                <button onclick="deletePost(${index})">🗑️ Delete</button>
-            </div>
-            <div id="comments-${index}" class="hidden comment-section">
-                <input type="text" id="commentInput-${index}" placeholder="Add a comment...">
-                <button onclick="addComment(${index})">Post Comment</button>
-                <div id="commentList-${index}">
-                    ${post.comments.map(comment => `<p>${comment}</p>`).join('')}
-                </div>
-            </div>
+        const postDiv = document.createElement('div');
+        postDiv.className = 'post';
+        postDiv.innerHTML = `
+            <strong>${post.user}</strong> <em>${post.date}</em>
+            <p>${post.content}</p>
+            <p>Likes: ${post.likes} Dislikes: ${post.dislikes}</p>
+            <button onclick="likePost(${index})">👍</button>
+            <button onclick="dislikePost(${index})">👎</button>
+            <input type="text" placeholder="Add a comment" id="commentInput${index}">
+            <button onclick="addComment(${index})">Comment</button>
+            <button onclick="deletePost(${index})">🗑️</button>
+            <div>${post.comments.map(comment => `<p>🗨️ ${comment}</p>`).join('')}</div>
         `;
-        postsDiv.appendChild(postElement);
+        postsContainer.appendChild(postDiv);
     });
 }
 
-// Like a post
 function likePost(index) {
-    const posts = JSON.parse(localStorage.getItem('posts')) || [];
     posts[index].likes++;
-    localStorage.setItem('posts', JSON.stringify(posts));
-    loadPosts(); // Re-render posts
+    displayPosts();
 }
 
-// Dislike a post
 function dislikePost(index) {
-    const posts = JSON.parse(localStorage.getItem('posts')) || [];
     posts[index].dislikes++;
-    localStorage.setItem('posts', JSON.stringify(posts));
-    loadPosts(); // Re-render posts
+    displayPosts();
 }
 
-// Toggle comment section visibility
-function toggleComments(index) {
-    const commentsDiv = document.getElementById(`comments-${index}`);
-    commentsDiv.classList.toggle('hidden');
-}
-
-// Add a comment to a post
 function addComment(index) {
-    const commentInput = document.getElementById(`commentInput-${index}`).value;
-    if (!commentInput.trim()) {
-        alert("Comment cannot be empty!");
-        return;
+    const commentInput = document.getElementById(`commentInput${index}`);
+    const comment = commentInput.value;
+
+    if (comment) {
+        posts[index].comments.push(comment);
+        commentInput.value = '';
+        displayPosts();
+    } else {
+        alert('Please enter a comment.');
     }
-
-    const posts = JSON.parse(localStorage.getItem('posts')) || [];
-    posts[index].comments.push(commentInput);
-    localStorage.setItem('posts', JSON.stringify(posts));
-
-    document.getElementById(`commentInput-${index}`).value = ''; // Clear comment input
-    loadPosts(); // Re-render posts
 }
 
-// Delete a post
 function deletePost(index) {
-    const posts = JSON.parse(localStorage.getItem('posts')) || [];
-    posts.splice(index, 1); //
+    if (confirm('Are you sure you want to delete this post?')) {
+        posts.splice(index, 1);
+        displayPosts();
+    }
+}
