@@ -81,7 +81,7 @@ function createPost() {
 // Function to display posts
 function displayPosts() {
     const postsContainer = document.getElementById('postsContainer');
-    postsContainer.innerHTML = '';
+    postsContainer.innerHTML = ''; // Clear existing posts
 
     posts.forEach((post, index) => {
         const postDiv = document.createElement('div');
@@ -94,23 +94,23 @@ function displayPosts() {
             <button onclick="dislikePost(${index})">👎</button>
             <input type="text" placeholder="Add a comment" id="commentInput${index}">
             <button onclick="addComment(${index})">Comment</button>
-            <button onclick="deletePost(${index})">🗑️</button>
+            <button onclick="deletePost(${index})">🗑️</button> <!-- Delete Button -->
             <div>${post.comments.map(comment => `<p>🗨️ ${comment}</p>`).join('')}</div>
         `;
-        postsContainer.appendChild(postDiv);
+        postsContainer.appendChild(postDiv); // Add post to the container
     });
 }
 
 // Function to like a post
 function likePost(index) {
     posts[index].likes++;
-    displayPosts();
+    displayPosts(); // Refresh displayed posts
 }
 
 // Function to dislike a post
 function dislikePost(index) {
     posts[index].dislikes++;
-    displayPosts();
+    displayPosts(); // Refresh displayed posts
 }
 
 // Function to add a comment to a post
@@ -119,9 +119,9 @@ function addComment(index) {
     const comment = commentInput.value;
 
     if (comment) {
-        posts[index].comments.push(comment);
+        posts[index].comments.push(comment); // Add comment to the post
         commentInput.value = ''; // Clear the input field
-        displayPosts(); // Refresh the displayed posts
+        displayPosts(); // Refresh displayed posts
     } else {
         alert('Please enter a comment.');
     }
