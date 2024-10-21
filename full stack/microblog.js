@@ -1,4 +1,4 @@
-// Check if a user is already logged in
+// Check if user is already logged in
 if (localStorage.getItem('loggedInUser')) {
     showMicroblog();
 } else if (localStorage.getItem('users')) {
@@ -74,7 +74,7 @@ function createPost() {
         timestamp: date.toLocaleString(),
         likes: 0,
         dislikes: 0,
-        comments: []
+        comments: [],
     };
     posts.push(post);
     localStorage.setItem('posts', JSON.stringify(posts));
@@ -99,10 +99,13 @@ function loadPosts() {
         postElement.innerHTML = `
             <strong>${post.username}:</strong> ${post.content}<br>
             <small>Posted on: ${post.timestamp}</small><br><br>
-            <button onclick="likePost(${index})">👍 ${post.likes}</button>
-            <button onclick="dislikePost(${index})">👎 ${post.dislikes}</button>
-            <button onclick="toggleComments(${index})">💬 Comments</button>
-            <div id="comments-${index}" class="hidden">
+            <div class="post-buttons">
+                <button onclick="likePost(${index})">👍 ${post.likes}</button>
+                <button onclick="dislikePost(${index})">👎 ${post.dislikes}</button>
+                <button onclick="toggleComments(${index})">💬 Comments</button>
+                <button onclick="deletePost(${index})">🗑️ Delete</button>
+            </div>
+            <div id="comments-${index}" class="hidden comment-section">
                 <input type="text" id="commentInput-${index}" placeholder="Add a comment...">
                 <button onclick="addComment(${index})">Post Comment</button>
                 <div id="commentList-${index}">
@@ -149,5 +152,13 @@ function addComment(index) {
     localStorage.setItem('posts', JSON.stringify(posts));
 
     document.getElementById(`commentInput-${index}`).value = ''; // Clear comment input
+    loadPosts(); // Re-render posts
+}
+
+// Delete a post
+function deletePost(index) {
+    const posts = JSON.parse(localStorage.getItem('posts')) || [];
+    posts.splice(index, 1); // Remove the post from the array
+    localStorage.setItem('posts', JSON.stringify(posts));
     loadPosts(); // Re-render posts
 }
