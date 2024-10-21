@@ -10,6 +10,7 @@
   <header>
     <h1>Food Delivery</h1>
   </header>
+  
   <div class="menu">
     <div class="item">
       <img src="full stack/IMG-20241021-WA0015.jpg" alt="Burger">
@@ -25,27 +26,45 @@
       <span class="price">₹100</span>
       <button class="add-to-cart">Add to Cart</button>
     </div>
-     <div class="item">
+    <div class="item">
       <img src="full stack/IMG-20241021-WA0014.jpg" alt="Biryani">
       <h2>Biryani</h2>
-      <p>always favourite food.</p>
+      <p>Always a favorite food.</p>
       <span class="price">₹250</span>
       <button class="add-to-cart">Add to Cart</button>
     </div>
     <div class="item">
       <img src="full stack/IMG-20241021-WA0015.jpg" alt="Meals">
       <h2>Meals</h2>
-      <p>always favourite food.</p>
+      <p>Always a favorite food.</p>
       <span class="price">₹130</span>
       <button class="add-to-cart">Add to Cart</button>
     </div>
     <!-- Add more items here -->
   </div>
+  
   <div class="cart">
     <h2>Cart</h2>
     <ul id="cart-items"></ul>
     <h3>Total: ₹<span id="cart-total">0</span></h3>
+    
+    <h2>Customer Details</h2>
+    <form id="customer-details-form">
+      <input type="text" id="customer-name" placeholder="Your Name" required>
+      <input type="text" id="customer-address" placeholder="Your Address" required>
+      <input type="text" id="customer-phone" placeholder="Your Phone Number" required>
+    </form>
+    
+    <h2>Payment Method</h2>
+    <select id="payment-method">
+      <option value="Card">Card</option>
+      <option value="Cash-on Delivery">Cash-on Delivery</option>
+      <option value="UPI">UPI</option>
+    </select>
+    
+    <button id="checkout-button">Checkout</button>
   </div>
+
   <script src="food delivery.js"></script>
 </body>
 </html>
