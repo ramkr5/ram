@@ -74,29 +74,37 @@ function addProduct() {
     const name = document.getElementById('productName').value;
     const price = document.getElementById('productPrice').value;
     const description = document.getElementById('productDescription').value;
+    const imageInput = document.getElementById('productImage');
 
     // Validate inputs
-    if (!name || !price || !description) {
+    if (!name || !price || !description || !imageInput.files.length) {
         alert('Please fill in all fields.');
         return;
     }
 
-    const product = {
-        name,
-        price: parseFloat(price),
-        description,
-        date: new Date().toLocaleString(),
-        user: currentUser.username,
+    const reader = new FileReader();
+    reader.onload = function(event) {
+        const product = {
+            name,
+            price: parseFloat(price),
+            description,
+            date: new Date().toLocaleString(),
+            user: currentUser.username,
+            image: event.target.result // Store the image data URL
+        };
+
+        products.push(product); // Add product to the array
+        localStorage.setItem('products', JSON.stringify(products)); // Save products to localStorage
+        displayProducts(); // Refresh product display
+
+        // Clear input fields
+        document.getElementById('productName').value = '';
+        document.getElementById('productPrice').value = '';
+        document.getElementById('productDescription').value = '';
+        imageInput.value = ''; // Clear the image input
     };
 
-    products.push(product); // Add product to the array
-    localStorage.setItem('products', JSON.stringify(products)); // Save products to localStorage
-    displayProducts(); // Refresh product display
-
-    // Clear input fields
-    document.getElementById('productName').value = '';
-    document.getElementById('productPrice').value = '';
-    document.getElementById('productDescription').value = '';
+    reader.readAsDataURL(imageInput.files[0]); // Read the image file as a data URL
 }
 
 // Function to display products
@@ -112,6 +120,7 @@ function displayProducts() {
             <p>Price: $${product.price.toFixed(2)}</p>
             <p>${product.description}</p>
             <p><small>Listed by: ${product.user} on ${product.date}</small></p>
+            <img src="${product.image}" alt="${product.name}" style="width:100%; max-height:200px; object-fit:cover;">
             <button onclick="deleteProduct(${index})">Delete</button>
         `;
         productsContainer.appendChild(productDiv); // Add product to the container
