@@ -1,6 +1,6 @@
 let users = []; // Array to hold user data
 let currentUser = null; // To keep track of the logged-in user
-let posts = []; // Array to hold posts
+let posts = JSON.parse(localStorage.getItem('posts')) || []; // Load posts from localStorage
 
 // Function to handle user signup
 function signUp() {
@@ -74,6 +74,7 @@ function createPost() {
     };
 
     posts.push(post); // Add post to the posts array
+    localStorage.setItem('posts', JSON.stringify(posts)); // Save posts to localStorage
     document.getElementById('postContent').value = ''; // Clear the input field
     displayPosts(); // Display all posts
 }
@@ -94,7 +95,7 @@ function displayPosts() {
             <button onclick="dislikePost(${index})">👎</button>
             <input type="text" placeholder="Add a comment" id="commentInput${index}">
             <button onclick="addComment(${index})">Comment</button>
-            <button onclick="deletePost(${index})">🗑️</button> <!-- Delete Button -->
+            <button onclick="deletePost(${index})">🗑️</button>
             <div>${post.comments.map(comment => `<p>🗨️ ${comment}</p>`).join('')}</div>
         `;
         postsContainer.appendChild(postDiv); // Add post to the container
@@ -104,12 +105,14 @@ function displayPosts() {
 // Function to like a post
 function likePost(index) {
     posts[index].likes++;
+    localStorage.setItem('posts', JSON.stringify(posts)); // Update localStorage
     displayPosts(); // Refresh displayed posts
 }
 
 // Function to dislike a post
 function dislikePost(index) {
     posts[index].dislikes++;
+    localStorage.setItem('posts', JSON.stringify(posts)); // Update localStorage
     displayPosts(); // Refresh displayed posts
 }
 
@@ -121,6 +124,7 @@ function addComment(index) {
     if (comment) {
         posts[index].comments.push(comment); // Add comment to the post
         commentInput.value = ''; // Clear the input field
+        localStorage.setItem('posts', JSON.stringify(posts)); // Update localStorage
         displayPosts(); // Refresh displayed posts
     } else {
         alert('Please enter a comment.');
@@ -131,29 +135,12 @@ function addComment(index) {
 function deletePost(index) {
     if (confirm('Are you sure you want to delete this post?')) {
         posts.splice(index, 1); // Remove the post from the array
+        localStorage.setItem('posts', JSON.stringify(posts)); // Update localStorage
         displayPosts(); // Refresh the displayed posts
     }
 }
-// Function to create a new post
-function createPost() {
-    const content = document.getElementById('postContent').value;
 
-    if (!content) {
-        alert('Please enter some content.');
-        return;
-    }
-
-    // Create a new post object
-    const post = {
-        content,
-        date: new Date().toLocaleString(),
-        likes: 0,
-        dislikes: 0,
-        comments: [],
-        user: currentUser.username
-    };
-
-    posts.push(post); // Add post to the posts array
-    document.getElementById('postContent').value = ''; // Clear the input field
-    displayPosts(); // Display all posts (the posts will not be erased)
-}
+// Display posts on page load
+window.onload = function() {
+    displayPosts();
+};
