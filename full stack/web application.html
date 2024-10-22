@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classifieds App</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Buy & Sell Used Products</h1>
+
+        <div id="authSection">
+            <h2 id="authTitle">Login</h2>
+            <input type="text" id="username" placeholder="Username" required>
+            <input type="password" id="password" placeholder="Password" required>
+            <button onclick="login()">Login</button>
+            <p>Don't have an account? <button onclick="toggleSignup()">Sign Up</button></p>
+        </div>
+
+        <div id="signupSection" style="display:none;">
+            <h2>Sign Up</h2>
+            <input type="text" id="signupUsername" placeholder="Username" required>
+            <input type="password" id="signupPassword" placeholder="Password" required>
+            <button onclick="signUp()">Sign Up</button>
+            <p>Already have an account? <button onclick="toggleLogin()">Login</button></p>
+        </div>
+
+        <div id="productSection" style="display:none;">
+            <h2>Add New Product</h2>
+            <input type="text" id="productName" placeholder="Product Name" required>
+            <input type="number" id="productPrice" placeholder="Price" required>
+            <textarea id="productDescription" placeholder="Description" required></textarea>
+            <button onclick="addProduct()">Add Product</button>
+
+            <div id="productList">
+                <h2>Available Products</h2>
+                <div id="productsContainer"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
