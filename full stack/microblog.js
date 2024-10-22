@@ -12,30 +12,16 @@ function signUp() {
         return;
     }
 
-    // Check if user already exists
     if (users.find(user => user.username === username)) {
         alert('User already exists.');
         return;
     }
 
-    // Add new user to the users array
     users.push({ username, password });
     alert('Sign up successful! You can now log in.');
     
-    // Clear the input fields
     document.getElementById('signupUsername').value = '';
     document.getElementById('signupPassword').value = '';
-}
-
-// Function to toggle between login and signup
-function toggleSignup() {
-    document.getElementById('auth').style.display = 'none';
-    document.getElementById('signupSection').style.display = 'block';
-}
-
-function toggleLogin() {
-    document.getElementById('signupSection').style.display = 'none';
-    document.getElementById('auth').style.display = 'block';
 }
 
 // Function to handle user login
@@ -43,22 +29,18 @@ function login() {
     const username = document.getElementById('loginUsername').value;
     const password = document.getElementById('loginPassword').value;
 
-    // Find the user with the provided username and password
     const user = users.find(user => user.username === username && user.password === password);
 
     if (user) {
         currentUser = user; // Set the current user
         alert(`Welcome ${username}!`);
-        
-        // Hide authentication section and show post section
+
         document.getElementById('auth').style.display = 'none';
         document.getElementById('postSection').style.display = 'block';
 
-        // Clear login input fields
         document.getElementById('loginUsername').value = '';
         document.getElementById('loginPassword').value = '';
 
-        // Display existing posts
         displayPosts();
     } else {
         alert('Invalid username or password.');
@@ -74,7 +56,6 @@ function createPost() {
         return;
     }
 
-    // Create a new post object
     const post = {
         content,
         date: new Date().toLocaleString(),
@@ -153,9 +134,9 @@ function deletePost(index) {
 
 // Display posts on page load
 window.onload = function() {
-    // Check if user is already logged in
     if (currentUser) {
+        document.getElementById('auth').style.display = 'none';
         document.getElementById('postSection').style.display = 'block';
-        displayPosts();
     }
+    displayPosts();
 };
