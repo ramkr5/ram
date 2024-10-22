@@ -27,6 +27,17 @@ function signUp() {
     document.getElementById('signupPassword').value = '';
 }
 
+// Function to toggle between login and signup
+function toggleSignup() {
+    document.getElementById('auth').style.display = 'none';
+    document.getElementById('signupSection').style.display = 'block';
+}
+
+function toggleLogin() {
+    document.getElementById('signupSection').style.display = 'none';
+    document.getElementById('auth').style.display = 'block';
+}
+
 // Function to handle user login
 function login() {
     const username = document.getElementById('loginUsername').value;
@@ -142,5 +153,9 @@ function deletePost(index) {
 
 // Display posts on page load
 window.onload = function() {
-    displayPosts();
+    // Check if user is already logged in
+    if (currentUser) {
+        document.getElementById('postSection').style.display = 'block';
+        displayPosts();
+    }
 };
