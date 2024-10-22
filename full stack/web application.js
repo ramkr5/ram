@@ -1,6 +1,8 @@
 let users = []; // Array to hold user data
 let currentUser = null; // To keep track of the logged-in user
 let products = JSON.parse(localStorage.getItem('products')) || []; // Load products from localStorage
+let cart = JSON.parse(localStorage.getItem('cart')) || []; // Load cart from localStorage
+let wishlist = JSON.parse(localStorage.getItem('wishlist')) || []; // Load wishlist from localStorage
 
 // Function to toggle between login and signup
 function toggleSignup() {
@@ -121,8 +123,10 @@ function displayProducts() {
             <p>${product.description}</p>
             <p><small>Listed by: ${product.user} on ${product.date}</small></p>
             <img src="${product.image}" alt="${product.name}" style="width:100%; max-height:200px; object-fit:cover;">
-            <button onclick="buyProduct(${index})">Buy</button>
-            <button onclick="deleteProduct(${index})">Delete</button>
+            <button onclick="buyProduct(${index})">Buy 🛒</button>
+            <button onclick="addToCart(${index})">Add to Cart 🛍️</button>
+            <button onclick="addToWishlist(${index})">Add to Wishlist ❤️</button>
+            <button onclick="deleteProduct(${index})">Delete 🗑️</button>
         `;
         productsContainer.appendChild(productDiv); // Add product to the container
     });
@@ -132,7 +136,22 @@ function displayProducts() {
 function buyProduct(index) {
     const product = products[index];
     alert(`You have purchased ${product.name} for ₹${product.price.toFixed(2)}!`);
-    // Here, you can implement further logic like marking the product as sold or removing it from the list.
+}
+
+// Function to add a product to the cart
+function addToCart(index) {
+    const product = products[index];
+    cart.push(product);
+    localStorage.setItem('cart', JSON.stringify(cart)); // Save cart to localStorage
+    alert(`${product.name} has been added to your cart! 🛒`);
+}
+
+// Function to add a product to the wishlist
+function addToWishlist(index) {
+    const product = products[index];
+    wishlist.push(product);
+    localStorage.setItem('wishlist', JSON.stringify(wishlist)); // Save wishlist to localStorage
+    alert(`${product.name} has been added to your wishlist! ❤️`);
 }
 
 // Function to delete a product
