@@ -3,33 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="microblog.css">
-    <title>Microblog App</title>
+    <title>Microblogging App</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Microblog App</h1>
-        <div id="auth">
+    <div id="auth">
+        <h2>Login</h2>
+        <input type="text" id="loginUsername" placeholder="Username" required>
+        <input type="password" id="loginPassword" placeholder="Password" required>
+        <button onclick="login()">Login</button>
+        <p>Don't have an account? <button onclick="toggleSignup()">Sign Up</button></p>
+
+        <div id="signupSection" style="display:none;">
             <h2>Sign Up</h2>
             <input type="text" id="signupUsername" placeholder="Username" required>
             <input type="password" id="signupPassword" placeholder="Password" required>
             <button onclick="signUp()">Sign Up</button>
-
-            <h2>Login</h2>
-            <input type="text" id="loginUsername" placeholder="Username" required>
-            <input type="password" id="loginPassword" placeholder="Password" required>
-            <button onclick="login()">Login</button>
+            <p>Already have an account? <button onclick="toggleLogin()">Login</button></p>
         </div>
-
-        <div id="postSection" style="display:none;">
-            <h2>Create a Post</h2>
-            <textarea id="postContent" placeholder="What's on your mind?" required></textarea>
-            <button onclick="createPost()">Post</button>
-        </div>
-
-        <div id="postsContainer"></div>
     </div>
 
-    <script src="microblog.js"></script>
+    <div id="postSection" style="display:none;">
+        <h2>New Post</h2>
+        <textarea id="postContent" placeholder="What's on your mind?" required></textarea>
+        <button onclick="createPost()">Post</button>
+
+        <div id="postsContainer">
+            <h2>Posts</h2>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
