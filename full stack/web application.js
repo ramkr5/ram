@@ -1,6 +1,6 @@
 let users = []; // Array to hold user data
 let currentUser = null; // To keep track of the logged-in user
-let products = []; // Array to hold product listings
+let products = JSON.parse(localStorage.getItem('products')) || []; // Load products from localStorage
 
 // Function to toggle between login and signup
 function toggleSignup() {
@@ -61,6 +61,9 @@ function login() {
         // Clear login input fields
         document.getElementById('username').value = '';
         document.getElementById('password').value = '';
+
+        // Display existing products
+        displayProducts();
     } else {
         alert('Invalid username or password.');
     }
@@ -87,6 +90,7 @@ function addProduct() {
     };
 
     products.push(product); // Add product to the array
+    localStorage.setItem('products', JSON.stringify(products)); // Save products to localStorage
     displayProducts(); // Refresh product display
 
     // Clear input fields
@@ -108,7 +112,23 @@ function displayProducts() {
             <p>Price: $${product.price.toFixed(2)}</p>
             <p>${product.description}</p>
             <p><small>Listed by: ${product.user} on ${product.date}</small></p>
+            <button onclick="deleteProduct(${index})">Delete</button>
         `;
         productsContainer.appendChild(productDiv); // Add product to the container
     });
+}
+
+// Function to delete a product
+function deleteProduct(index) {
+    if (confirm('Are you sure you want to delete this product?')) {
+        products.splice(index, 1); // Remove the product from the array
+        localStorage.setItem('products', JSON.stringify(products)); // Update localStorage
+        displayProducts(); // Refresh the displayed products
+    }
+}
+
+// Display products if user is already logged in (optional)
+if (currentUser) {
+    document.getElementById('productSection').style.display = 'block';
+    displayProducts();
 }
