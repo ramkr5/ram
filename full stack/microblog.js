@@ -134,3 +134,26 @@ function deletePost(index) {
         displayPosts(); // Refresh the displayed posts
     }
 }
+// Function to create a new post
+function createPost() {
+    const content = document.getElementById('postContent').value;
+
+    if (!content) {
+        alert('Please enter some content.');
+        return;
+    }
+
+    // Create a new post object
+    const post = {
+        content,
+        date: new Date().toLocaleString(),
+        likes: 0,
+        dislikes: 0,
+        comments: [],
+        user: currentUser.username
+    };
+
+    posts.push(post); // Add post to the posts array
+    document.getElementById('postContent').value = ''; // Clear the input field
+    displayPosts(); // Display all posts (the posts will not be erased)
+}
