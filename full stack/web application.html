@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Classifieds App</title>
-    <link rel="stylesheet" href="web application.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
@@ -31,6 +31,7 @@
             <input type="text" id="productName" placeholder="Product Name" required>
             <input type="number" id="productPrice" placeholder="Price" required>
             <textarea id="productDescription" placeholder="Description" required></textarea>
+            <input type="file" id="productImage" accept="image/*" required>
             <button onclick="addProduct()">Add Product</button>
 
             <div id="productList">
@@ -40,6 +41,6 @@
         </div>
     </div>
 
-    <script src="web application.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
