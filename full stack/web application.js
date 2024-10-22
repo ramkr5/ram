@@ -121,10 +121,18 @@ function displayProducts() {
             <p>${product.description}</p>
             <p><small>Listed by: ${product.user} on ${product.date}</small></p>
             <img src="${product.image}" alt="${product.name}" style="width:100%; max-height:200px; object-fit:cover;">
+            <button onclick="buyProduct(${index})">Buy</button>
             <button onclick="deleteProduct(${index})">Delete</button>
         `;
         productsContainer.appendChild(productDiv); // Add product to the container
     });
+}
+
+// Function to handle buying a product
+function buyProduct(index) {
+    const product = products[index];
+    alert(`You have purchased ${product.name} for ₹${product.price.toFixed(2)}!`);
+    // Here, you can implement further logic like marking the product as sold or removing it from the list.
 }
 
 // Function to delete a product
