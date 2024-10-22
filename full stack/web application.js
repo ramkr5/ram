@@ -117,7 +117,7 @@ function displayProducts() {
         productDiv.className = 'product';
         productDiv.innerHTML = `
             <h3>${product.name}</h3>
-            <p>Price: ₹${product.price.toFixed(2)}</p>
+            <p>Price: $${product.price.toFixed(2)}</p>
             <p>${product.description}</p>
             <p><small>Listed by: ${product.user} on ${product.date}</small></p>
             <img src="${product.image}" alt="${product.name}" style="width:100%; max-height:200px; object-fit:cover;">
