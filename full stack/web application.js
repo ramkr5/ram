@@ -1,5 +1,5 @@
-let users = []; // Array to hold user data
-let currentUser = null; // To keep track of the logged-in user
+let users = JSON.parse(localStorage.getItem('users')) || []; // Load users from localStorage
+let currentUser = JSON.parse(localStorage.getItem('currentUser')) || null; // To keep track of the logged-in user
 let products = JSON.parse(localStorage.getItem('products')) || []; // Load products from localStorage
 let cart = JSON.parse(localStorage.getItem('cart')) || []; // Load cart from localStorage
 let wishlist = JSON.parse(localStorage.getItem('wishlist')) || []; // Load wishlist from localStorage
@@ -33,6 +33,8 @@ function signUp() {
 
     // Add new user to the users array
     users.push({ username, password });
+    localStorage.setItem('users', JSON.stringify(users)); // Save users to localStorage
+
     alert('Sign up successful! You can now log in.');
 
     // Clear the input fields
@@ -53,6 +55,8 @@ function login() {
 
     if (user) {
         currentUser = user; // Set the current user
+        localStorage.setItem('currentUser', JSON.stringify(currentUser)); // Save current user to localStorage
+
         alert(`Welcome ${username}!`);
 
         // Hide authentication section and show product section
@@ -126,7 +130,8 @@ function displayProducts() {
             <button onclick="buyProduct(${index})">Buy 🛒</button>
             <button onclick="addToCart(${index})">Add to Cart 🛍️</button>
             <button onclick="addToWishlist(${index})">Add to Wishlist ❤️</button>
-            <button onclick="deleteProduct(${index})">Delete 🗑️</button>
+            ${currentUser && currentUser.username === product.user ? 
+                `<button onclick="deleteProduct(${index})">Delete 🗑️</button>` : ''}
         `;
         productsContainer.appendChild(productDiv); // Add product to the container
     });
@@ -167,4 +172,15 @@ function deleteProduct(index) {
 if (currentUser) {
     document.getElementById('productSection').style.display = 'block';
     displayProducts();
+} else {
+    document.getElementById('authSection').style.display = 'block';
+}
+
+// Optional: Handle user logout
+function logout() {
+    localStorage.removeItem('currentUser');
+    currentUser = null;
+    document.getElementById('productSection').style.display = 'none';
+    document.getElementById('authSection').style.display = 'block';
+    alert('You have logged out successfully!');
 }
