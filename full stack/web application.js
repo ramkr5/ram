@@ -1,48 +1,17 @@
-let users = JSON.parse(localStorage.getItem('users')) || []; // Load users from localStorage
-let currentUser = JSON.parse(localStorage.getItem('currentUser')) || null; // To keep track of the logged-in user
-let products = JSON.parse(localStorage.getItem('products')) || []; // Load products from localStorage
-let cart = JSON.parse(localStorage.getItem('cart')) || []; // Load cart from localStorage
-let wishlist = JSON.parse(localStorage.getItem('wishlist')) || []; // Load wishlist from localStorage
+// Initialize some mock data for users and products
+let users = JSON.parse(localStorage.getItem('users')) || []; // Load users from localStorage, if any
+let products = JSON.parse(localStorage.getItem('products')) || []; // Load products from localStorage, if any
+let loggedInUser = null; // Current logged-in user
 
-// Function to toggle between login and signup
+// Function to toggle between Login and Sign-Up sections
 function toggleSignup() {
     document.getElementById('authSection').style.display = 'none';
     document.getElementById('signupSection').style.display = 'block';
 }
 
 function toggleLogin() {
-    document.getElementById('signupSection').style.display = 'none';
     document.getElementById('authSection').style.display = 'block';
-}
-
-// Function to handle user signup
-function signUp() {
-    const username = document.getElementById('signupUsername').value;
-    const password = document.getElementById('signupPassword').value;
-
-    if (!username || !password) {
-        alert('Please fill in all fields.');
-        return;
-    }
-
-    // Check if user already exists
-    if (users.find(user => user.username === username)) {
-        alert('User already exists.');
-        return;
-    }
-
-    // Add new user to the users array
-    users.push({ username, password });
-    localStorage.setItem('users', JSON.stringify(users)); // Save users to localStorage
-
-    alert('Sign up successful! You can now log in.');
-
-    // Clear the input fields
-    document.getElementById('signupUsername').value = '';
-    document.getElementById('signupPassword').value = '';
-
-    // Switch to login section
-    toggleLogin();
+    document.getElementById('signupSection').style.display = 'none';
 }
 
 // Function to handle user login
@@ -50,29 +19,42 @@ function login() {
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
 
-    // Find the user with the provided username and password
+    // Check if username and password match
     const user = users.find(user => user.username === username && user.password === password);
-
     if (user) {
-        currentUser = user; // Set the current user
-        localStorage.setItem('currentUser', JSON.stringify(currentUser)); // Save current user to localStorage
-
-        alert(`Welcome ${username}!`);
-
-        // Hide authentication section and show product section
-        document.getElementById('authSection').style.display = 'none';
-        document.getElementById('signupSection').style.display = 'none';
-        document.getElementById('productSection').style.display = 'block';
-
-        // Clear login input fields
-        document.getElementById('username').value = '';
-        document.getElementById('password').value = '';
-
-        // Display existing products
-        displayProducts();
+        loggedInUser = user;
+        localStorage.setItem('loggedInUser', JSON.stringify(user)); // Save logged-in user in localStorage
+        alert("Login successful!");
+        showProductSection();
     } else {
-        alert('Invalid username or password.');
+        alert("Invalid username or password");
     }
+}
+
+// Function to handle user sign-up
+function signUp() {
+    const username = document.getElementById('signupUsername').value;
+    const password = document.getElementById('signupPassword').value;
+
+    // Check if user already exists
+    const existingUser = users.find(user => user.username === username);
+    if (existingUser) {
+        alert("User already exists!");
+    } else {
+        const newUser = { username, password };
+        users.push(newUser);
+        localStorage.setItem('users', JSON.stringify(users)); // Save new user to localStorage
+        alert("Sign up successful! You can now log in.");
+        toggleLogin(); // Switch to login page after successful sign-up
+    }
+}
+
+// Show the product section when logged in
+function showProductSection() {
+    document.getElementById('authSection').style.display = 'none';
+    document.getElementById('signupSection').style.display = 'none';
+    document.getElementById('productSection').style.display = 'block';
+    displayProducts(); // Display the saved products
 }
 
 // Function to add a new product
@@ -80,107 +62,94 @@ function addProduct() {
     const name = document.getElementById('productName').value;
     const price = document.getElementById('productPrice').value;
     const description = document.getElementById('productDescription').value;
-    const imageInput = document.getElementById('productImage');
+    const image = document.getElementById('productImage').files[0];
 
-    // Validate inputs
-    if (!name || !price || !description || !imageInput.files.length) {
-        alert('Please fill in all fields.');
-        return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = function(event) {
+    if (name && price && description && image) {
         const product = {
             name,
-            price: parseFloat(price),
+            price,
             description,
-            date: new Date().toLocaleString(),
-            user: currentUser.username,
-            image: event.target.result // Store the image data URL
+            image: URL.createObjectURL(image) // Create a URL for the image to be displayed
         };
-
-        products.push(product); // Add product to the array
+        products.push(product);
         localStorage.setItem('products', JSON.stringify(products)); // Save products to localStorage
-        displayProducts(); // Refresh product display
-
-        // Clear input fields
-        document.getElementById('productName').value = '';
-        document.getElementById('productPrice').value = '';
-        document.getElementById('productDescription').value = '';
-        imageInput.value = ''; // Clear the image input
-    };
-
-    reader.readAsDataURL(imageInput.files[0]); // Read the image file as a data URL
+        displayProducts(); // Update product list
+        alert("Product added successfully!");
+    } else {
+        alert("Please fill in all product details.");
+    }
 }
 
-// Function to display products
+// Function to display all products
 function displayProducts() {
     const productsContainer = document.getElementById('productsContainer');
-    productsContainer.innerHTML = ''; // Clear existing products
+    productsContainer.innerHTML = ''; // Clear current products
 
-    products.forEach((product, index) => {
+    products.forEach(product => {
         const productDiv = document.createElement('div');
-        productDiv.className = 'product';
-        productDiv.innerHTML = `
-            <h3>${product.name}</h3>
-            <p>Price: ₹${product.price.toFixed(2)}</p>
-            <p>${product.description}</p>
-            <p><small>Listed by: ${product.user} on ${product.date}</small></p>
-            <img src="${product.image}" alt="${product.name}" style="width:100%; max-height:200px; object-fit:cover;">
-            <button onclick="buyProduct(${index})">Buy 🛒</button>
-            <button onclick="addToCart(${index})">Add to Cart 🛍️</button>
-            <button onclick="addToWishlist(${index})">Add to Wishlist ❤️</button>
-            ${currentUser && currentUser.username === product.user ? 
-                `<button onclick="deleteProduct(${index})">Delete 🗑️</button>` : ''}
-        `;
-        productsContainer.appendChild(productDiv); // Add product to the container
+        productDiv.classList.add('product');
+
+        const productImage = document.createElement('img');
+        productImage.src = product.image;
+        productImage.alt = product.name;
+        productImage.style.width = '100px'; // Size the image
+        productDiv.appendChild(productImage);
+
+        const productName = document.createElement('h3');
+        productName.textContent = product.name;
+        productDiv.appendChild(productName);
+
+        const productPrice = document.createElement('p');
+        productPrice.textContent = `$${product.price}`;
+        productDiv.appendChild(productPrice);
+
+        const productDescription = document.createElement('p');
+        productDescription.textContent = product.description;
+        productDiv.appendChild(productDescription);
+
+        productsContainer.appendChild(productDiv);
     });
 }
 
-// Function to handle buying a product
-function buyProduct(index) {
-    const product = products[index];
-    alert(`You have purchased ${product.name} for ₹${product.price.toFixed(2)}!`);
-}
+// Function to process payment (mock payment process)
+function processPayment() {
+    const customerName = document.getElementById('customerName').value;
+    const customerAddress = document.getElementById('customerAddress').value;
+    const creditCardNumber = document.getElementById('creditCardNumber').value;
+    const expiryDate = document.getElementById('expiryDate').value;
 
-// Function to add a product to the cart
-function addToCart(index) {
-    const product = products[index];
-    cart.push(product);
-    localStorage.setItem('cart', JSON.stringify(cart)); // Save cart to localStorage
-    alert(`${product.name} has been added to your cart! 🛒`);
-}
-
-// Function to add a product to the wishlist
-function addToWishlist(index) {
-    const product = products[index];
-    wishlist.push(product);
-    localStorage.setItem('wishlist', JSON.stringify(wishlist)); // Save wishlist to localStorage
-    alert(`${product.name} has been added to your wishlist! ❤️`);
-}
-
-// Function to delete a product
-function deleteProduct(index) {
-    if (confirm('Are you sure you want to delete this product?')) {
-        products.splice(index, 1); // Remove the product from the array
-        localStorage.setItem('products', JSON.stringify(products)); // Update localStorage
-        displayProducts(); // Refresh the displayed products
+    if (customerName && customerAddress && creditCardNumber && expiryDate) {
+        alert("Payment successful! Your purchase is on its way.");
+        // Hide the Buy Section and reset it for future purchases
+        document.getElementById('buySection').style.display = 'none';
+        resetBuySection();
+    } else {
+        alert("Please fill in all payment details.");
     }
 }
 
-// Display products if user is already logged in (optional)
-if (currentUser) {
-    document.getElementById('productSection').style.display = 'block';
-    displayProducts();
-} else {
-    document.getElementById('authSection').style.display = 'block';
+// Function to reset the buy section after a successful purchase
+function resetBuySection() {
+    document.getElementById('customerName').value = '';
+    document.getElementById('customerAddress').value = '';
+    document.getElementById('creditCardNumber').value = '';
+    document.getElementById('expiryDate').value = '';
 }
 
-// Optional: Handle user logout
+// Handle logout and clear the logged-in state
 function logout() {
-    localStorage.removeItem('currentUser');
-    currentUser = null;
+    loggedInUser = null;
+    localStorage.removeItem('loggedInUser');
     document.getElementById('productSection').style.display = 'none';
     document.getElementById('authSection').style.display = 'block';
-    alert('You have logged out successfully!');
+    alert('Logged out successfully!');
 }
+
+// Check if a user is already logged in when the page loads
+window.onload = function () {
+    const loggedInData = JSON.parse(localStorage.getItem('loggedInUser'));
+    if (loggedInData) {
+        loggedInUser = loggedInData;
+        showProductSection();
+    }
+};
