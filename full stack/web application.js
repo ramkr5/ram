@@ -1,155 +1,140 @@
-// Initialize some mock data for users and products
-let users = JSON.parse(localStorage.getItem('users')) || []; // Load users from localStorage, if any
-let products = JSON.parse(localStorage.getItem('products')) || []; // Load products from localStorage, if any
-let loggedInUser = null; // Current logged-in user
+// Data storage in local storage
+let users = JSON.parse(localStorage.getItem("users")) || [];
+let currentUser = JSON.parse(localStorage.getItem("currentUser")) || null;
+let products = JSON.parse(localStorage.getItem("products")) || [];
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-// Function to toggle between Login and Sign-Up sections
-function toggleSignup() {
-    document.getElementById('authSection').style.display = 'none';
-    document.getElementById('signupSection').style.display = 'block';
+// Show login form initially
+function showLogin() {
+    document.getElementById("login-form").style.display = "block";
+    document.getElementById("signup-form").style.display = "none";
 }
 
-function toggleLogin() {
-    document.getElementById('authSection').style.display = 'block';
-    document.getElementById('signupSection').style.display = 'none';
+// Show signup form
+function showSignup() {
+    document.getElementById("login-form").style.display = "none";
+    document.getElementById("signup-form").style.display = "block";
 }
 
-// Function to handle user login
+// Login functionality
 function login() {
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
+    const username = document.getElementById("login-username").value;
+    const password = document.getElementById("login-password").value;
 
-    // Check if username and password match
-    const user = users.find(user => user.username === username && user.password === password);
+    const user = users.find(u => u.username === username && u.password === password);
+    
     if (user) {
-        loggedInUser = user;
-        localStorage.setItem('loggedInUser', JSON.stringify(user)); // Save logged-in user in localStorage
-        alert("Login successful!");
-        showProductSection();
+        currentUser = user;
+        localStorage.setItem("currentUser", JSON.stringify(currentUser));
+        loadProducts();
+        loadCart();
+        showProductContainer();
     } else {
-        alert("Invalid username or password");
+        alert("Invalid credentials!");
     }
 }
 
-// Function to handle user sign-up
-function signUp() {
-    const username = document.getElementById('signupUsername').value;
-    const password = document.getElementById('signupPassword').value;
+// Signup functionality
+function signup() {
+    const username = document.getElementById("signup-username").value;
+    const password = document.getElementById("signup-password").value;
 
-    // Check if user already exists
-    const existingUser = users.find(user => user.username === username);
-    if (existingUser) {
-        alert("User already exists!");
-    } else {
-        const newUser = { username, password };
-        users.push(newUser);
-        localStorage.setItem('users', JSON.stringify(users)); // Save new user to localStorage
-        alert("Sign up successful! You can now log in.");
-        toggleLogin(); // Switch to login page after successful sign-up
+    if (users.find(u => u.username === username)) {
+        alert("Username already exists!");
+        return;
     }
+
+    const newUser = { username, password };
+    users.push(newUser);
+    localStorage.setItem("users", JSON.stringify(users));
+
+    // Auto login after signup
+    currentUser = newUser;
+    localStorage.setItem("currentUser", JSON.stringify(currentUser));
+    loadProducts();
+    loadCart();
+    showProductContainer();
 }
 
-// Show the product section when logged in
-function showProductSection() {
-    document.getElementById('authSection').style.display = 'none';
-    document.getElementById('signupSection').style.display = 'none';
-    document.getElementById('productSection').style.display = 'block';
-    displayProducts(); // Display the saved products
+// Show product management container
+function showProductContainer() {
+    document.getElementById("auth-container").style.display = "none";
+    document.getElementById("products-container").style.display = "block";
+    document.getElementById("cart-container").style.display = "none";
 }
 
-// Function to add a new product
+// Add product
 function addProduct() {
-    const name = document.getElementById('productName').value;
-    const price = document.getElementById('productPrice').value;
-    const description = document.getElementById('productDescription').value;
-    const image = document.getElementById('productImage').files[0];
+    const name = document.getElementById("product-name").value;
+    const description = document.getElementById("product-description").value;
+    const price = document.getElementById("product-price").value;
 
-    if (name && price && description && image) {
-        const product = {
-            name,
-            price,
-            description,
-            image: URL.createObjectURL(image) // Create a URL for the image to be displayed
-        };
-        products.push(product);
-        localStorage.setItem('products', JSON.stringify(products)); // Save products to localStorage
-        displayProducts(); // Update product list
-        alert("Product added successfully!");
-    } else {
-        alert("Please fill in all product details.");
-    }
+    const newProduct = {
+        id: Date.now(),
+        name,
+        description,
+        price: parseFloat(price),
+        seller: currentUser.username
+    };
+
+    products.push(newProduct);
+    localStorage.setItem("products", JSON.stringify(products));
+    loadProducts();
 }
 
-// Function to display all products
-function displayProducts() {
-    const productsContainer = document.getElementById('productsContainer');
-    productsContainer.innerHTML = ''; // Clear current products
+// Load and display products
+function loadProducts() {
+    const productList = document.getElementById("product-list");
+    productList.innerHTML = "";
 
     products.forEach(product => {
-        const productDiv = document.createElement('div');
-        productDiv.classList.add('product');
-
-        const productImage = document.createElement('img');
-        productImage.src = product.image;
-        productImage.alt = product.name;
-        productImage.style.width = '100px'; // Size the image
-        productDiv.appendChild(productImage);
-
-        const productName = document.createElement('h3');
-        productName.textContent = product.name;
-        productDiv.appendChild(productName);
-
-        const productPrice = document.createElement('p');
-        productPrice.textContent = `$${product.price}`;
-        productDiv.appendChild(productPrice);
-
-        const productDescription = document.createElement('p');
-        productDescription.textContent = product.description;
-        productDiv.appendChild(productDescription);
-
-        productsContainer.appendChild(productDiv);
+        const li = document.createElement("li");
+        li.innerHTML = `
+            <strong>${product.name}</strong><br>
+            ${product.description}<br>
+            $${product.price}<br>
+            <button onclick="addToCart(${product.id})">Add to Cart</button>
+            ${product.seller === currentUser.username ? `<button onclick="deleteProduct(${product.id})">Delete</button>` : ""}
+        `;
+        productList.appendChild(li);
     });
 }
 
-// Function to process payment (mock payment process)
-function processPayment() {
-    const customerName = document.getElementById('customerName').value;
-    const customerAddress = document.getElementById('customerAddress').value;
-    const creditCardNumber = document.getElementById('creditCardNumber').value;
-    const expiryDate = document.getElementById('expiryDate').value;
-
-    if (customerName && customerAddress && creditCardNumber && expiryDate) {
-        alert("Payment successful! Your purchase is on its way.");
-        // Hide the Buy Section and reset it for future purchases
-        document.getElementById('buySection').style.display = 'none';
-        resetBuySection();
-    } else {
-        alert("Please fill in all payment details.");
-    }
+// Add product to cart
+function addToCart(productId) {
+    const product = products.find(p => p.id === productId);
+    cart.push(product);
+    localStorage.setItem("cart", JSON.stringify(cart));
+    loadCart();
 }
 
-// Function to reset the buy section after a successful purchase
-function resetBuySection() {
-    document.getElementById('customerName').value = '';
-    document.getElementById('customerAddress').value = '';
-    document.getElementById('creditCardNumber').value = '';
-    document.getElementById('expiryDate').value = '';
+// Remove product from cart
+function removeFromCart(productId) {
+    cart = cart.filter(item => item.id !== productId);
+    localStorage.setItem("cart", JSON.stringify(cart));
+    loadCart();
 }
 
-// Handle logout and clear the logged-in state
-function logout() {
-    loggedInUser = null;
-    localStorage.removeItem('loggedInUser');
-    document.getElementById('productSection').style.display = 'none';
-    document.getElementById('authSection').style.display = 'block';
-    alert('Logged out successfully!');
+// Load and display cart
+function loadCart() {
+    const cartList = document.getElementById("cart-list");
+    cartList.innerHTML = "";
+
+    cart.forEach(product => {
+        const li = document.createElement("li");
+        li.innerHTML = `
+            <strong>${product.name}</strong><br>
+            $${product.price}<br>
+            <button onclick="removeFromCart(${product.id})">Remove</button>
+        `;
+        cartList.appendChild(li);
+    });
 }
 
-// Check if a user is already logged in when the page loads
-window.onload = function () {
-    const loggedInData = JSON.parse(localStorage.getItem('loggedInUser'));
-    if (loggedInData) {
-        loggedInUser = loggedInData;
-        showProductSection();
-    }
-};
+// Delete product
+function deleteProduct(productId) {
+    products = products.filter(p => p.id !== productId);
+    localStorage.setItem("products", JSON.stringify(products));
+    loadProducts();
+}
+
