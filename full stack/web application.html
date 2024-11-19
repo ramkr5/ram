@@ -4,10 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Classified Ad - Buy and Sell</title>
-    <link rel="stylesheet" href="web application.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+    <!-- Authentication Section -->
     <div id="auth-container">
         <h2>Login / Signup</h2>
         <div id="login-form">
@@ -25,22 +26,44 @@
         </div>
     </div>
 
+    <!-- Product Management Section -->
     <div id="products-container" style="display: none;">
         <h2>Product Management</h2>
         <input type="text" id="product-name" placeholder="Product Name" />
         <input type="text" id="product-description" placeholder="Description" />
         <input type="number" id="product-price" placeholder="Price" />
+        <input type="url" id="product-image" placeholder="Product Image URL" /> <!-- Image URL input -->
         <button onclick="addProduct()">Add Product</button>
 
         <h3>Available Products:</h3>
         <ul id="product-list"></ul>
     </div>
 
+    <!-- Cart Section -->
     <div id="cart-container" style="display: none;">
         <h2>Your Cart</h2>
         <ul id="cart-list"></ul>
+
+        <!-- Customer Details Form -->
+        <div id="customer-details" style="display: none;">
+            <h3>Customer Details</h3>
+            <input type="text" id="customer-name" placeholder="Full Name" />
+            <input type="email" id="customer-email" placeholder="Email" />
+            <input type="text" id="customer-address" placeholder="Shipping Address" />
+
+            <!-- Payment Method Selection -->
+            <h4>Select Payment Method</h4>
+            <select id="payment-method">
+                <option value="">Select a method</option>
+                <option value="credit-card">Credit Card</option>
+                <option value="UPI">UPI</option>
+                <option value="cash on delivery">cash on delivery</option>
+            </select>
+            
+            <button onclick="checkout()">Proceed to Checkout</button>
+        </div>
     </div>
 
-    <script src="web application.js"></script>
+    <script src="web application .js"></script>
 </body>
 </html>
