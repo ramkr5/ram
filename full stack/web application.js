@@ -6,7 +6,7 @@ let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
 // Show login form initially
 function showLogin() {
-    document.getElementById("login-form").style.display = "block";
+    document.getElementById("login-form").style.display = "block";     
     document.getElementById("signup-form").style.display = "none";
 }
 
@@ -68,13 +68,15 @@ function addProduct() {
     const name = document.getElementById("product-name").value;
     const description = document.getElementById("product-description").value;
     const price = document.getElementById("product-price").value;
+    const imageUrl = document.getElementById("product-image").value; // Image URL from input
 
     const newProduct = {
         id: Date.now(),
         name,
         description,
         price: parseFloat(price),
-        seller: currentUser.username
+        seller: currentUser.username,
+        image: imageUrl // Save image URL
     };
 
     products.push(newProduct);
@@ -90,11 +92,13 @@ function loadProducts() {
     products.forEach(product => {
         const li = document.createElement("li");
         li.innerHTML = `
+            <img src="${product.image}" alt="${product.name}" width="100" /><br> <!-- Product image -->
             <strong>${product.name}</strong><br>
             ${product.description}<br>
             $${product.price}<br>
             <button onclick="addToCart(${product.id})">Add to Cart</button>
             ${product.seller === currentUser.username ? `<button onclick="deleteProduct(${product.id})">Delete</button>` : ""}
+            <button onclick="buyNow(${product.id})">Buy Now</button> <!-- Buy Now button -->
         `;
         productList.appendChild(li);
     });
@@ -118,6 +122,7 @@ function removeFromCart(productId) {
 // Load and display cart
 function loadCart() {
     const cartList = document.getElementById("cart-list");
+    const customerDetailsContainer = document.getElementById("customer-details");
     cartList.innerHTML = "";
 
     cart.forEach(product => {
@@ -125,16 +130,53 @@ function loadCart() {
         li.innerHTML = `
             <strong>${product.name}</strong><br>
             $${product.price}<br>
-            <button onclick="removeFromCart(${product.id})">Remove</button>
+            <button onclick="removeFromCart(${product.id})">Remove</button> <!-- Remove from cart -->
         `;
         cartList.appendChild(li);
     });
+
+    // Display customer details form
+    customerDetailsContainer.style.display = "block";
 }
 
-// Delete product
+// Delete product from products list
 function deleteProduct(productId) {
     products = products.filter(p => p.id !== productId);
     localStorage.setItem("products", JSON.stringify(products));
     loadProducts();
 }
 
+// Handle "Buy Now" functionality
+function buyNow(productId) {
+    const product = products.find(p => p.id === productId);
+
+    // This is a simple alert; you can replace it with a checkout process or payment system.
+    alert(`Proceeding to checkout for: ${product.name} - $${product.price}`);
+}
+
+// Checkout functionality
+function checkout() {
+    const name = document.getElementById("customer-name").value;
+    const email = document.getElementById("customer-email").value;
+    const address = document.getElementById("customer-address").value;
+
+    if (!name || !email || !address) {
+        alert("Please fill out all customer details.");
+        return;
+    }
+
+    // Payment method simulation (in real case, integrate with payment gateway)
+    const paymentMethod = document.getElementById("payment-method").value;
+    if (!paymentMethod) {
+        alert("Please select a payment method.");
+        return;
+    }
+
+    // Simulate successful payment
+    alert(`Payment successful! Thank you for your purchase, ${name}. We will ship to: ${address}.`);
+
+    // Clear cart after successful checkout
+    cart = [];
+    localStorage.setItem("cart", JSON.stringify(cart));
+    loadCart();
+}
